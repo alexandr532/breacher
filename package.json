@@ -1,0 +1,9 @@
+{
+  "private": "true",
+  "workspaces": [
+    "packages/*"
+  ],
+  "devEngines": [
+    "node": "16.x || 17.x"
+  ]
+}
