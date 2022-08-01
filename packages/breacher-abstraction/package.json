@@ -2,7 +2,7 @@
   "name": "@alexandr532/breacher-abstraction",
   "description": "Abstraction Layer of Breacher. Providing high level interface for database manipulation",
   "keywords": [ "breacher", "abstraction", "database" ],
-  "version": "1.0.0",
+  "version": "0.0.0",
   "main": "index.js",
   "license": "MIT",
   "repository": {
