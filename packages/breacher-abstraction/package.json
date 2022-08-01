@@ -1,5 +1,5 @@
 {
-  "name": "breacher-abstraction",
+  "name": "@alexandr532/breacher-abstraction",
   "description": "Abstraction Layer of Breacher. Providing high level interface for database manipulation",
   "keywords": [ "breacher", "abstraction", "database" ],
   "version": "1.0.0",
@@ -15,9 +15,13 @@
   "devDependencies": {
     "typescript": "^4.7.4"
   },
+  "scripts": {
+    "prepublish": "tsc"
+  },
   "files": [
     "LICENSE",
     "README.md",
-    "index.js"
+    "index.js",
+    "cjs"
   ]
 }
