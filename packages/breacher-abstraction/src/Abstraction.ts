@@ -9,6 +9,7 @@
 import { BreacherDBConfig } from '../../shared/BreacherTypes';
 
 export default class Abstraction {
+  // Starts Database
   public startDB(config: BreacherDBConfig) {
 
   }
