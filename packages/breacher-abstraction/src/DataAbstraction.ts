@@ -8,35 +8,37 @@
  */
 import { IImplementor } from './Implementor';
 
-export abstract class DataAbstraction {
+export default abstract class DataAbstraction {
   // Interface abstract methods that should be described for each collection
   // fetch returns an array of objects from collection.
   // Returns empty array if nothing found
   // TODO memory menagement and cursor handling as it can be a lot of items
-  public abstract fetch: () => Promise<Object[]>;
+  public abstract fetch(): Promise<Object[]>;
 
   // Finds intems in collection and returns them as Promise of Array.
   // This Array can be empty if nothing found
+  // Can be used with searchQuery object or key: value pair
   // TODO memory management and cursor handling as it can be a lot of items
-  public abstract find: (key: string, value: string) => Promise<Object[]>;
+  // TODO Create Primitive type for value
+  public abstract find(query: string | Object, value?: any): Promise<Object[]>;
 
   // Inserts item in to coillection, returns a Promise of the item that was inserted
   // item can have an _id field, should check if it is already exists and
   // throw error if so.
-  public abstract insert: (item: Object) => Promise<Object>;
+  public abstract insert(item: Object): Promise<Object>;
 
   // Finds item by provided _id. Returns Promise of the item that can be resolved
   // with void if no item found
-  public abstract item: (_id: string) => Promise<Object | void>;
+  public abstract item(_id: string): Promise<Object | void>;
 
   // Removes an item by its _id from collection.
   // Resolved with nothing if not error thrown.
-  public abstract remove: (_id: string) => Promise<void>;
+  public abstract remove(_id: string): Promise<void>;
 
   // Replaces item in collection by id with a new item, item should be
   // cloned with removing _id, as already existing item can be used as replacer
   // Returns a Promise of the item after replace was finished
-  public abstract replace: (id: string, item: Object) => Promise<Object>;
+  public abstract replace(_id: string, item: Object): Promise<Object>;
 
   // Bridge to MongoDb, can be any other database implementor if
   // implements IImplementor interface
@@ -49,23 +51,27 @@ export abstract class DataAbstraction {
     return this._implementor.addItemImplementation(collectionName, item);
   }
 
-  protected findItems(collectionName: string, searchQuery: string): Promise<Object[]> {
+  protected findItems(collectionName: string, searchQuery: Object): Promise<Object[]> {
     return this._implementor.findItemsImplementation(collectionName, searchQuery);
   }
 
-  protected findItemById(collectionName: string, id: string): Promise<Object | void> {
-    return this._implementor.findItemByIdImplementation(collectionName, id);
+  // Do not be confused with _id parameter name, it is not objectId as mongodb
+  // uses, objectId is not allowed here, it is used in mongodb implementor only.
+  // underscore before the name means that this parameter is database _id not
+  // to mix it with user provided id inside one item.
+  protected findItemById(collectionName: string, _id: string): Promise<Object | void> {
+    return this._implementor.findItemByIdImplementation(collectionName, _id);
   }
 
   protected getItems(collectionName: string): Promise<Object[]> {
     return this._implementor.getItemsImplementation(collectionName);
   }
 
-  protected removeItemById(collectionName: string, id: string): Promise<void> {
-    return this._implementor.removeItemByIdImplementation(collectionName, id);
+  protected removeItemById(collectionName: string, _id: string): Promise<void> {
+    return this._implementor.removeItemByIdImplementation(collectionName, _id);
   }
 
-  protected replaceItemById(collectionName: string, id: string, item: Object): Promise<Object> {
-    return this._implementor.replaceItemByIdImplementation(collectionName, id, item);
+  protected replaceItemById(collectionName: string, _id: string, item: Object): Promise<Object> {
+    return this._implementor.replaceItemByIdImplementation(collectionName, _id, item);
   }
 }

@@ -8,7 +8,7 @@
  */
 export interface IImplementor {
   addItemImplementation: (collectionName: string, item: Object) => Promise<Object>;
-  findItemsImplementation: (collectionName: string, searchQuery: Object) => Promise<Object>;
+  findItemsImplementation: (collectionName: string, searchQuery: Object) => Promise<Object[]>;
   findItemByIdImplementation: (collectionName: string, id: string) => Promise<Object | void>;
   getItemsImplementation: (collectionName: string) => Promise<Object[]>;
   removeItemByIdImplementation: (collectionName: string, id: string) => Promise<void>;
