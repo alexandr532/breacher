@@ -39,7 +39,6 @@ export default class AbstractionFactory<T> extends DataAbstraction {
   // Can take one object as parameter, to search for all matching key: value pairs,
   // or can take two parameters, where firs is key name (string) and second is a
   // primitive value
-  // TODO Add some checks on find parameters not allowing breaking values
   public async find(query: string | any, value?: any): Promise<T[]> {
     const searchQuery = typeof query === 'object' ? query : {
       [query]: value
@@ -52,9 +51,6 @@ export default class AbstractionFactory<T> extends DataAbstraction {
     }
   }
 
-  // TODO Add Prototype clone and strict clone functions.
-  // Strict clone should check if object matches expected structure to show
-  // warning if not
   public async insert(item: any): Promise<T> {
     try {
       const insertable: T = this._prototype.clone(item);
@@ -83,9 +79,6 @@ export default class AbstractionFactory<T> extends DataAbstraction {
     }
   }
 
-  // TODO Can be executed faster by skipping the findItemById call after replacement
-  // just returning the cloned item, so no need in replaced item coming from
-  // replace item by id
   public async replace(_id: string, item: any): Promise<T> {
     try {
       const insertable: T = this._prototype.clone(item);

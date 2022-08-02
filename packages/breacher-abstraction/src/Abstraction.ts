@@ -7,10 +7,17 @@
  * @abstraction
  */
 import { BreacherDBConfig } from '../../shared/BreacherTypes';
+import AbstractionFactory from './AbstractionFactory';
+import MongoDbImplementor from './MongoDbImplementor';
 export default class Abstraction {
-  //Starts Database
-  public startDB(config: BreacherDBConfig) {
+  private _implementor: MongoDbImplementor | undefined;
 
+  //Starts Database
+  public async startDB(config: BreacherDBConfig, dbName: string, options?: any) {
+    const uri = !config.user ?
+      `mongodb://${config.host}:${config.port}` :
+      `mongodb://${config.user}:${config.pass}@${config.host}:${config.port}`;
+    this._implementor = new MongoDbImplementor(uri, dbName, options);
   }
 }
 
