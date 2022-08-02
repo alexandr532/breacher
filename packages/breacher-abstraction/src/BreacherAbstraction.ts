@@ -14,7 +14,7 @@ export class BreacherAbstraction {
   // methods. It will be not defined if abstraction is not running.
   private _abstraction: Abstraction | undefined;
 
-  // _config saves configuration with which abstraction was starteid
+  // _config saves configuration with which abstraction was started
   // it will be not defined if abstraction is not starting or running
   private _config: BreacherDBConfig | undefined;
 
@@ -34,7 +34,7 @@ export class BreacherAbstraction {
     return this._createAbstraction(config);
   }
 
-  // Stopps running abstraction, can be used to clean instance so it can be
+  // Stops running abstraction, can be used to clean instance so it can be
   // started again with another or the same configuration with no creation of
   // a new BreacherAbstraction instance
   public async stop(): Promise<void> {

@@ -3,7 +3,7 @@
   "workspaces": [
     "packages/*"
   ],
-  "devEngines": [
+  "devEngines": {
     "node": "16.x || 17.x"
-  ]
+  }
 }

@@ -10,9 +10,9 @@ import DataAbstraction from './DataAbstraction';
 import Prototype from './Prototype';
 
 export default class AbstractionFactory<T> extends DataAbstraction {
-  // Implementation of collection interactionmethods bound to current bridge.
-  // Factory gets _collectionName to make the interface, and a Prototype
-  // exemplar, that has a clone function to pretend another object edjecting
+  // Implementation of collection interaction methods bound to current bridge.
+  // Factory gets collection name to make the interface, and a Prototype
+  // exemplar, that has a clone function to pretend another object ejecting
   // the copy.
   // Each item will be checked and changed to the prototype object structure.
   public constructor(
@@ -22,8 +22,8 @@ export default class AbstractionFactory<T> extends DataAbstraction {
     super();
   }
 
-  // Every implemention here has arror wrapping, so the final consumer will get
-  // not only what was not working, but the exet reason comming from current
+  // Every implementation here has error wrapping, so the final consumer will get
+  // not only what was not working, but the exact reason coming from current
   // database implementor.
   public async fetch(): Promise<T[]> {
     try {
@@ -37,8 +37,8 @@ export default class AbstractionFactory<T> extends DataAbstraction {
   // Can take one object as parameter, to search for all matching key: value pairs,
   // or can take two parameters, where firs is key name (string) and second is a
   // primitive value
-  // TODO Add some checks on find parameters not allowing breaking walues
-  public async find(query: string | Object, value?: any): Promise<T[]> {
+  // TODO Add some checks on find parameters not allowing breaking values
+  public async find(query: string | any, value?: any): Promise<T[]> {
     const searchQuery = typeof query === 'object' ? query : {
       [query]: value
     };
@@ -53,9 +53,9 @@ export default class AbstractionFactory<T> extends DataAbstraction {
   // TODO Add Prototype clone and strict clone functions.
   // Strict clone should check if object matches expected structure to show
   // warning if not
-  // TODO Return only inserted item _id from addItem implemention
-  // so we can change it in prototype to edject new copy, same as it would be
-  // returned from addItem. Mongodb returns inserted _id by default
+  // TODO Return only inserted item _id from add item implementation
+  // so we can change it in prototype to produce new copy, same as it would be
+  // returned from add item. MongoDb returns inserted _id by default
   public async insert(item: any): Promise<T> {
     try {
       const insertable: T = this._prototype.clone(item);
@@ -66,7 +66,7 @@ export default class AbstractionFactory<T> extends DataAbstraction {
     }
   }
 
-  // objectId is not allowed outside, so parameter is string only
+  // Object id is not allowed outside, so parameter is string only
   public async item(_id: string): Promise<T | void> {
     try {
       const item: any | void = this.findItemById(this._collectionName, _id);
@@ -84,9 +84,9 @@ export default class AbstractionFactory<T> extends DataAbstraction {
     }
   }
 
-  // TODO Can be more performant skipping the findItemById call after replacement
-  // just returning the cloned item, so no need in replacedItem comming from
-  // replaceItemById
+  // TODO Can be executed faster by skipping the findItemById call after replacement
+  // just returning the cloned item, so no need in replaced item coming from
+  // replace item by id
   public async replace(_id: string, item: any): Promise<T> {
     try {
       const insertable: T = this._prototype.clone(item);

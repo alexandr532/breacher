@@ -12,17 +12,17 @@ export default abstract class DataAbstraction {
   // Interface abstract methods that should be described for each collection
   // fetch returns an array of objects from collection.
   // Returns empty array if nothing found
-  // TODO memory menagement and cursor handling as it can be a lot of items
+  // TODO memory management and cursor handling as it can be a lot of items
   public abstract fetch(): Promise<any[]>;
 
-  // Finds intems in collection and returns them as Promise of Array.
+  // Finds items in collection and returns them as Promise of Array.
   // This Array can be empty if nothing found
   // Can be used with searchQuery object or key: value pair
   // TODO memory management and cursor handling as it can be a lot of items
   // TODO Create Primitive type for value
   public abstract find(query: string | any, value?: any): Promise<any[]>;
 
-  // Inserts item in to coillection, returns a Promise of the item that was inserted
+  // Inserts item in to collection, returns a Promise of the item that was inserted
   // item can have an _id field, should check if it is already exists and
   // throw error if so.
   public abstract insert(item: any): Promise<any>;
@@ -36,7 +36,7 @@ export default abstract class DataAbstraction {
   public abstract remove(_id: string): Promise<void>;
 
   // Replaces item in collection by id with a new item, item should be
-  // cloned with removing _id, as already existing item can be used as replacer
+  // cloned with removing _id, as already existing item can be used as replace
   // Returns a Promise of the item after replace was finished
   public abstract replace(_id: string, item: any): Promise<any>;
 
@@ -46,7 +46,7 @@ export default abstract class DataAbstraction {
 
   // From here all protected functions connecting methods
   // that will be used to describe interface methods from above
-  // to current database implementator
+  // to current database implementor
   protected addItem(collectionName: string, item: any): Promise<any> {
     return this._implementor.addItemImplementation(collectionName, item);
   }
@@ -55,8 +55,8 @@ export default abstract class DataAbstraction {
     return this._implementor.findItemsImplementation(collectionName, searchQuery);
   }
 
-  // Do not be confused with _id parameter name, it is not objectId as mongodb
-  // uses, objectId is not allowed here, it is used in mongodb implementor only.
+  // Do not be confused with _id parameter name, it is not ObjectId as MongoDb
+  // uses, ObjectId is not allowed here, it is used in MongoDb implementor only.
   // underscore before the name means that this parameter is database _id not
   // to mix it with user provided id inside one item.
   protected findItemById(collectionName: string, _id: string): Promise<any | void> {

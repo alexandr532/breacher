@@ -21,7 +21,7 @@ export default class Prototype<T> {
     }
     const result: any = {}
     for (let key of this._keys) {
-      // This _id check normalizes id if it came from mongodb.
+      // This _id check normalizes id if it came from MongoDb.
       result[key] = key === '_id' ? obj[key].toString : obj[key];
     }
     return result as T;
