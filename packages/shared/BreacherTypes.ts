@@ -1,7 +1,7 @@
-export type BreacherDBConfig = BreacherDBConfigObject | string;
-
-export type BreacherDBConfigObject = {
-    host: string,
-    name: string,
-    port: number,
+export type BreacherDBConfig = {
+  host: string,
+  name: string,
+  port: number,
+  user?: string,
+  pass?: string
 };

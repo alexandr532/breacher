@@ -7,10 +7,10 @@
  * @abstraction
  */
 export interface IImplementor {
-  addItemImplementation: (collectionName: string, item: Object) => Promise<Object>;
-  findItemsImplementation: (collectionName: string, searchQuery: Object) => Promise<Object[]>;
-  findItemByIdImplementation: (collectionName: string, id: string) => Promise<Object | void>;
-  getItemsImplementation: (collectionName: string) => Promise<Object[]>;
+  addItemImplementation: (collectionName: string, item: any) => Promise<any>;
+  findItemsImplementation: (collectionName: string, searchQuery: any) => Promise<any[]>;
+  findItemByIdImplementation: (collectionName: string, id: string) => Promise<any | void>;
+  getItemsImplementation: (collectionName: string) => Promise<any[]>;
   removeItemByIdImplementation: (collectionName: string, id: string) => Promise<void>;
-  replaceItemByIdImplementation: (collectionName: string, id: string, item: Object) => Promise<Object>;
+  replaceItemByIdImplementation: (collectionName: string, id: string, item: any) => Promise<any>;
 }
