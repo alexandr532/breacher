@@ -42,17 +42,17 @@ export default abstract class DataAbstraction {
 
   // Bridge to MongoDb, can be any other database implementor if
   // implements IImplementor interface
-  private _implementor: IImplementor = MongodbImplementor.instance();
+  protected abstract implementor: IImplementor;
 
   // From here all protected functions connecting methods
   // that will be used to describe interface methods from above
   // to current database implementor
   protected addItem(collectionName: string, item: any): Promise<any> {
-    return this._implementor.addItemImplementation(collectionName, item);
+    return this.implementor.addItemImplementation(collectionName, item);
   }
 
   protected findItems(collectionName: string, searchQuery: any): Promise<any[]> {
-    return this._implementor.findItemsImplementation(collectionName, searchQuery);
+    return this.implementor.findItemsImplementation(collectionName, searchQuery);
   }
 
   // Do not be confused with _id parameter name, it is not ObjectId as MongoDb
@@ -60,18 +60,18 @@ export default abstract class DataAbstraction {
   // underscore before the name means that this parameter is database _id not
   // to mix it with user provided id inside one item.
   protected findItemById(collectionName: string, _id: string): Promise<any | void> {
-    return this._implementor.findItemByIdImplementation(collectionName, _id);
+    return this.implementor.findItemByIdImplementation(collectionName, _id);
   }
 
   protected getItems(collectionName: string): Promise<any[]> {
-    return this._implementor.getItemsImplementation(collectionName);
+    return this.implementor.getItemsImplementation(collectionName);
   }
 
   protected removeItemById(collectionName: string, _id: string): Promise<void> {
-    return this._implementor.removeItemByIdImplementation(collectionName, _id);
+    return this.implementor.removeItemByIdImplementation(collectionName, _id);
   }
 
   protected replaceItemById(collectionName: string, _id: string, item: any): Promise<any> {
-    return this._implementor.replaceItemByIdImplementation(collectionName, _id, item);
+    return this.implementor.replaceItemByIdImplementation(collectionName, _id, item);
   }
 }

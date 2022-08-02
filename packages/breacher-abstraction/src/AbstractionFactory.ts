@@ -7,6 +7,7 @@
  * @abstraction
  */
 import DataAbstraction from './DataAbstraction';
+import {IImplementor} from './Implementor';
 import Prototype from './Prototype';
 
 export default class AbstractionFactory<T> extends DataAbstraction {
@@ -16,6 +17,7 @@ export default class AbstractionFactory<T> extends DataAbstraction {
   // the copy.
   // Each item will be checked and changed to the prototype object structure.
   public constructor(
+    protected implementor: IImplementor,
     private _collectionName: string,
     private _prototype: Prototype<T>
   ) {
@@ -53,9 +55,6 @@ export default class AbstractionFactory<T> extends DataAbstraction {
   // TODO Add Prototype clone and strict clone functions.
   // Strict clone should check if object matches expected structure to show
   // warning if not
-  // TODO Return only inserted item _id from add item implementation
-  // so we can change it in prototype to produce new copy, same as it would be
-  // returned from add item. MongoDb returns inserted _id by default
   public async insert(item: any): Promise<T> {
     try {
       const insertable: T = this._prototype.clone(item);

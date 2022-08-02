@@ -4,44 +4,61 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree
  *
- * @abstraction
+ * @abstraction 2022-08-02
  */
 import * as mongodb from 'mongodb';
-import {BreacherDBConfig} from '../../shared/BreacherTypes';
 import {IImplementor} from "./Implementor";
 
 export default class MongoDbImplementor implements IImplementor {
-  private _client: mongodb.MongoClient;
+  private _client: Promise<mongodb.MongoClient>;
+  private _db: mongodb.Db | undefined;
 
   public constructor(
     private _uri: string,
-    private _options: mongodb.MongoClientOptions
+    private _dbName: string,
+    private _options?: mongodb.MongoClientOptions
   ) {
-    this._client = new mongodb.MongoClient(this._uri, this._options);
+    const client = new mongodb.MongoClient(this._uri, this._options);
+    this._client = client.connect();
   }
 
-  public addItemImplementation(collectionName: string, item: any): Promise<any> {
-    
+  public async addItemImplementation(collectionName: string, item: any): Promise<any> {
+    const collection = await this._getCollection(collectionName);
+    const result: mongodb.InsertOneResult = await collection.insertOne(item);
+    item._id = result.insertedId;
+    return item;
   }
   
-  public findItemsImplementation(collectionName: string, searchQuery: any): Promise<any[]> {
-    
+  public async findItemsImplementation(collectionName: string, searchQuery: any): Promise<any[]> {
+    if (searchQuery.hasOwnProperty('_id')) {
+      const item = this.findItemByIdImplementation(collectionName, searchQuery._id);
+      return [item];
+    }
+    const collection: mongodb.Collection = await this._getCollection(collectionName);
+    const cursor: mongodb.FindCursor = collection.find(searchQuery);
+    return cursor.toArray();
   }
   
-  public findItemByIdImplementation(collectionName: string, id: string): Promise<any> {
-    
+  public async findItemByIdImplementation(collectionName: string, id: string): Promise<any> {
+    const collection: mongodb.Collection = await this._getCollection(collectionName);
+    return collection.findOne({_id: new mongodb.ObjectId(id)});
   }
   
-  public getItemsImplementation(collectionName: string): Promise<any[]> {
-    
+  public async getItemsImplementation(collectionName: string): Promise<any[]> {
+    const collection: mongodb.Collection = await this._getCollection(collectionName);
+    const cursor: mongodb.FindCursor = collection.find();
+    return cursor.toArray();
   }
   
-  public removeItemByIdImplementation(collectionName: string, id: string): Promise<void> {
-    
+  public async removeItemByIdImplementation(collectionName: string, id: string): Promise<void> {
+    const collection: mongodb.Collection = await this._getCollection(collectionName);
+    await collection.findOneAndDelete({_id: new mongodb.ObjectId(id)});
   }
   
-  public replaceItemByIdImplementation(collectionName: string, id: string, item: any): Promise<any> {
-    
+  public async replaceItemByIdImplementation(collectionName: string, id: string, item: any): Promise<any> {
+    const collection: mongodb.Collection = await this._getCollection(collectionName);
+    const result: mongodb.ModifyResult = await collection.findOneAndReplace({_id: new mongodb.ObjectId(id)}, item);
+    return result.value;
   }
 
   private async _getCollection(collectionName: string): Promise<mongodb.Collection> {
@@ -50,6 +67,10 @@ export default class MongoDbImplementor implements IImplementor {
   }
 
   private async _getDb(): Promise<mongodb.Db> {
-  
+    const client: mongodb.MongoClient = await this._client;
+    if (this._db == null) {
+      this._db = client.db(this._dbName);
+    }
+    return this._db;
   }
 }
