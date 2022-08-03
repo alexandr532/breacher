@@ -1,0 +1,29 @@
+{
+  "name": "@alexandr532/breacher",
+  "description": "Breacher",
+  "keywords": [
+    "breacher"
+  ],
+  "version": "0.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https//github.com/alexandr532/breacher",
+    "directory": "packages/breacher"
+  },
+  "bugs": "https://github.com/alexandr532/breacher/issues",
+  "homepage": "https://github.com/alexandr532/breacher",
+  "devDependencies": {
+    "typescript": "^4.7.4"
+  },
+  "scripts": {
+    "prepublish": "tsc"
+  },
+  "files": [
+    "LICENSE",
+    "README.md",
+    "index.js",
+    "cjs"
+  ]
+}
