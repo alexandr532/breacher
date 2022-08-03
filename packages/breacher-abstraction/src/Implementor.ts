@@ -13,4 +13,6 @@ export interface IImplementor {
   getItemsImplementation(collectionName: string): Promise<any[]>;
   removeItemByIdImplementation(collectionName: string, id: string): Promise<void>;
   replaceItemByIdImplementation(collectionName: string, id: string, item: any): Promise<any>;
+  start(): Promise<void>;
+  stop(): Promise<void>;
 }

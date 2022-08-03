@@ -61,13 +61,28 @@ export default class MongoDbImplementor implements IImplementor {
     return result.value;
   }
 
+  // Async start to use _getDb function with not giving Db instance back
+  // If _db is already started will be instantly resolved
+  public async start(): Promise<void> {
+    await this._getDb();
+  }
+
+  // TODO check if there a way to stop client before it is connected
+  public async stop(): Promise<void> {
+    return await (await this._client).close();
+  }
+
   private async _getCollection(collectionName: string): Promise<mongodb.Collection> {
     const db: mongodb.Db = await this._getDb();
     return db.collection(collectionName);
   }
 
   private async _getDb(): Promise<mongodb.Db> {
+    // If already connected the _client promise will be already resolved
+    // If the process of connect is not finished yet, the _client promise
+    // is already exists and we can await on it here
     const client: mongodb.MongoClient = await this._client;
+    // Reusing same _db connection
     if (this._db == null) {
       this._db = client.db(this._dbName);
     }

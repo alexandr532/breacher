@@ -9,15 +9,12 @@
 export default class Prototype<T> {
   private _keys: string[] | undefined;
 
-  // Input prototype object
-  public constructor(prototype: T) {
-    this._init(prototype);
-  }
-
   // Create a copy of the object and assign type to it
   public clone(obj: any): T {
+    // First object that is cloned becomes the prototype
     if (!this._keys) {
-      throw("Prototype: Missing prototype object, unable to clone");
+      this._init(obj);
+      return this.clone(obj);
     }
     const result: any = {}
     for (let key of this._keys) {

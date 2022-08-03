@@ -11,6 +11,8 @@ import {IImplementor} from './Implementor';
 import Prototype from './Prototype';
 
 export default class AbstractionFactory<T> extends DataAbstraction {
+  private _prototype: Prototype<T> = new Prototype();
+
   // Implementation of collection interaction methods bound to current bridge.
   // Factory gets collection name to make the interface, and a Prototype
   // exemplar, that has a clone function to pretend another object ejecting
@@ -18,8 +20,7 @@ export default class AbstractionFactory<T> extends DataAbstraction {
   // Each item will be checked and changed to the prototype object structure.
   public constructor(
     protected implementor: IImplementor,
-    private _collectionName: string,
-    private _prototype: Prototype<T>
+    private _collectionName: string
   ) {
     super();
   }
