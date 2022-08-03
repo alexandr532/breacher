@@ -4,9 +4,8 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree
  *
- * @abstraction
+ * @abstraction 2022-08-03
  */
-import { BreacherDBConfig } from '../../shared/BreacherTypes';
 import AbstractionFactory from './AbstractionFactory';
 import MongoDbImplementor from './MongoDbImplementor';
 
@@ -15,11 +14,8 @@ export default class Abstraction {
   private _register: Map<string, AbstractionFactory<any>> = new Map();
 
   //Starts Database
-  public startDb(config: BreacherDBConfig, options?: any): Promise<void> {
-    const uri = !config.user ?
-      `mongodb://${config.host}:${config.port}` :
-      `mongodb://${config.user}:${config.pass}@${config.host}:${config.port}`;
-    this._implementor = new MongoDbImplementor(uri, config.name, options);
+  public startDb(uri: string, dbName: string, options?: any): Promise<void> {
+    this._implementor = new MongoDbImplementor(uri, dbName, options);
     return this._implementor.start();
   }
 
