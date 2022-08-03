@@ -6,6 +6,7 @@
   ],
   "version": "0.0.0",
   "main": "index.js",
+  "type": "module",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -25,5 +26,8 @@
     "README.md",
     "index.js",
     "cjs"
-  ]
+  ],
+  "dependencies": {
+    "socket.io": "^4.5.1"
+  }
 }
