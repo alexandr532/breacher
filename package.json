@@ -5,5 +5,8 @@
   ],
   "devEngines": {
     "node": "16.x || 17.x"
+  },
+  "scripts": {
+    "dev:server": "ts-node --experimental-specifier-resolution=node --esm ./packages/breacher/dev-server.ts"
   }
 }

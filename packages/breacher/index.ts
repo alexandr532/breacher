@@ -6,5 +6,4 @@
  *
  * @breacher 2022-08-03
  */
-
 export * from './src/Breacher';

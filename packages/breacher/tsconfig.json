@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "module": "esnext",
+    "module": "ESNext",
     "lib": [
       "es5",
       "dom",
@@ -20,6 +20,7 @@
   "include": [
     "src/**/*.ts"
   ],
+  "esm": true,
   "exclude": [
     "node_modules",
     "cjs"

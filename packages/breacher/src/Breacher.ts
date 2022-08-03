@@ -7,17 +7,13 @@
  * @breacher 2022-08-03
  */
 import http from 'http';
-import io from 'socket.io';
+import * as io from 'socket.io';
 import { BreacherAbstraction } from '../../breacher-abstraction';
 import { Breach } from './Breach';
 
-export default class Breacher {
+export class Breacher {
   private static _instance: Breacher;
   private _abstraction: Map<string, Map<string, BreacherAbstraction>> = new Map();
-  private _breach: Breach = {
-    connect: this._register,
-    launch: this._startServer
-  };
   private _io!: io.Server;
   private _server!: http.Server;
 
@@ -64,7 +60,7 @@ export default class Breacher {
     });
   }
 
-  private _register(uri: string, dbName: string): BreacherAbstraction {
+  private _register = (uri: string, dbName: string): BreacherAbstraction => {
     const fromUri: Map<string, BreacherAbstraction> | undefined = this._abstraction.get(uri);
     if (fromUri != null) {
       const fromDb: BreacherAbstraction | undefined = fromUri.get(dbName);
@@ -79,4 +75,9 @@ export default class Breacher {
     this._abstraction.set(uri, new Map([[dbName, abstraction]]));
     return abstraction
   }
+  
+  private _breach: Breach = {
+    connect: this._register,
+    launch: this._startServer
+  };
 }
