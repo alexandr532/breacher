@@ -51,7 +51,6 @@ export class Breacher {
   public static server(): void {
     if (!Breacher._instance) {
       Breacher._instance = new Breacher();
-      return;
     }
     // Start server if not already started
     if (!this._instance._server) {
@@ -64,11 +63,10 @@ export class Breacher {
   // TODO Should be described in separate file
   private _addListeners(): void {
     this._io.on('connection', (socket: io.Socket) => {
-      console.log('User connected');
       socket.on('disconnect', (reason: string) => {
         console.log(`User disconnected because of ${reason}`);
       });
-      socket.on('db-connect', (msg: string) => {
+      socket.on('auth', (msg: string) => {
         console.log(`User requests auth: `, msg);
       });
     });
@@ -100,7 +98,9 @@ export class Breacher {
   // Creates http server
   // TODO Should not use hardcoded port number.
   private _startSocketServer(): void {
-    this._server = http.createServer();
+    this._server = http.createServer({}, function (req, res) {
+      res.writeHead(200, { 'Access-Control-Allow-Origin': 'http://localhost:3000'});
+    });
     this._io = new io.Server(this._server);
     this._server.listen(3003, () => {
       console.log('Server is running');
