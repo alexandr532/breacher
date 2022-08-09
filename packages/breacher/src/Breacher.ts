@@ -98,10 +98,12 @@ export class Breacher {
   // Creates http server
   // TODO Should not use hardcoded port number.
   private _startSocketServer(): void {
-    this._server = http.createServer({}, function (req, res) {
-      res.writeHead(200, { 'Access-Control-Allow-Origin': 'http://localhost:3000'});
+    this._server = http.createServer();
+    this._io = new io.Server(this._server, {
+      cors: {
+        origin: '*'
+      }
     });
-    this._io = new io.Server(this._server);
     this._server.listen(3003, () => {
       console.log('Server is running');
     });
