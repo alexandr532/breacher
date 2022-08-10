@@ -7,6 +7,7 @@
  * @abstraction 2022-08-03
  */
 import Abstraction from './Abstraction';
+import DataAbstraction from './DataAbstraction';
 
 export class BreacherAbstraction {
   // _abstraction is database facade providing access to each collection
@@ -37,5 +38,13 @@ export class BreacherAbstraction {
       throw(`Abstraction:stop is not possible. Nothing running`);
     }
     return this._abstraction.stopDb();
+  }
+
+  // Returns DataAbstraction interface to access specific collection
+  public breache(collectionName: string): DataAbstraction {
+    if (!this._abstraction) {
+      throw(`Abstraction:breach is not possible, Nothing running`);
+    }
+    return this._abstraction.register(collectionName);
   }
 }

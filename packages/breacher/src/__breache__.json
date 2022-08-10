@@ -1,0 +1,19 @@
+{
+  "__about__": [
+    "This json represents __breache__ management collection structure",
+    "it will be created inside database when firstly used with breacher",
+    "This is helper collection to store created but not written collections"
+  ],
+  "__breache__": [
+    {
+      "name": "__breache__",
+      "existing": true,
+      "prototype": {
+        "_id": "string",
+        "name": "string",
+        "existing": "boolean",
+        "prototype": "object | undefined"
+      }
+    }
+  ]
+}

@@ -9,6 +9,7 @@
 import http from 'http';
 import * as io from 'socket.io';
 import { BreacherAbstraction } from '../../breacher-abstraction';
+import { Breache } from './Breache';
 
 export class Breacher {
   // Stores the only one allowed instance of Breacher.
@@ -17,6 +18,8 @@ export class Breacher {
   // Used by _register function to ensure only unique interfaces created.
   // Maps uri strings to the Map of database names to corresponding interface.
   private _abstraction: Map<string, Map<string, BreacherAbstraction>> = new Map();
+
+  private _breache: Map<BreacherAbstraction, Breache> = new Map();
   
   // Socket server is not defined if server is not running.
   private _io!: io.Server;
@@ -90,9 +93,15 @@ export class Breacher {
       fromUri.set(dbName, abstraction);
       return abstraction;
     }
+    // Creates abstraction interface to access and manipulate collection data.
+    // Abstraction created as new instance for each unique database, but bound
+    // to use same implementor that is singleton, shared between abstractions
     const abstraction = new BreacherAbstraction(uri, dbName);
     this._abstraction.set(uri, new Map([[dbName, abstraction]]));
-    return abstraction
+    // Creates collection management __breache__ collection
+    // As well as providing interface methods for it
+    this._breache.set(abstraction, new Breache(abstraction));
+    return abstraction;
   }
 
   // Creates http server
