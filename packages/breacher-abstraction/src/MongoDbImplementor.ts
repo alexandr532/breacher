@@ -43,6 +43,14 @@ export default class MongoDbImplementor implements IImplementor {
     const collection: mongodb.Collection = await this._getCollection(collectionName);
     return collection.findOne({_id: new mongodb.ObjectId(id)});
   }
+
+  public async getCollectionsImplementation(): Promise<string[]> {
+    const db: mongodb.Db = await this._getDb();
+    const cursor: mongodb.ListCollectionsCursor = db.listCollections({nameOnly: true});
+    return (await cursor.toArray()).map((value) => {
+        return value.toString();
+    });
+  }
   
   public async getItemsImplementation(collectionName: string): Promise<any[]> {
     const collection: mongodb.Collection = await this._getCollection(collectionName);

@@ -25,6 +25,14 @@ export default class AbstractionFactory<T> extends DataAbstraction {
     super();
   }
 
+  public async collections(): Promise<string[]> {
+    try {
+      return this.getCollections();
+    } catch (e) {
+      throw(`Error reading collections from database : ${e}`);
+    }
+  }
+
   // Every implementation here has error wrapping, so the final consumer will get
   // not only what was not working, but the exact reason coming from current
   // database implementor.

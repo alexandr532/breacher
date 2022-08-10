@@ -10,6 +10,10 @@ import { IImplementor } from './Implementor';
 
 export default abstract class DataAbstraction {
   // Interface abstract methods that should be described for each collection
+  
+  // Returns an array of collection names
+  public abstract collections(): Promise<string[]>
+
   // fetch returns an array of objects from collection.
   // Returns empty array if nothing found
   // TODO memory management and cursor handling as it can be a lot of items
@@ -61,6 +65,10 @@ export default abstract class DataAbstraction {
   // to mix it with user provided id inside one item.
   protected findItemById(collectionName: string, _id: string): Promise<any | void> {
     return this.implementor.findItemByIdImplementation(collectionName, _id);
+  }
+
+  protected getCollections(): Promise<string[]> {
+    return this.implementor.getCollectionsImplementation();
   }
 
   protected getItems(collectionName: string): Promise<any[]> {
