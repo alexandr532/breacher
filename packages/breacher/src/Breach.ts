@@ -16,52 +16,51 @@ const NULL_PROTOTYPE = {
   prototype: null
 }
 const BREACH = {
-  name: '__breache__',
+  name: '__breach__',
   existing: true,
   prototype: NULL_PROTOTYPE
 }
 
-
-type BreacheCollection = {
+type BreachInfo = {
   _id?: string,
   name: string,
   existing: boolean,
   prototype: object
 }
 
-export class Breache {
-  private _breache: Promise<DataAbstraction>;
+export class Breach {
+  private _breach: Promise<DataAbstraction>;
 
   constructor(
     private _abstraction: BreacherAbstraction
   ) {
-    this._breache = this._init();
+    this._breach = this._init();
   }
 
   public async register(collectionName: string): Promise<DataAbstraction> {
-    const breache: DataAbstraction = await this._breache;
-    const brick: BreacheCollection[] = await breache.find('name', collectionName);
+    const breache: DataAbstraction = await this._breach;
+    const info: BreachInfo | undefined = (await breache.find('name', collectionName))[0];
     const collections: string[] = await breache.collections();
     const existing: boolean = collections.indexOf(collectionName) !== -1;
-    if (!brick.length) {
+    if (info == null) {
       await breache.insert({
         name: collectionName,
         existing,
         prototype: NULL_PROTOTYPE
       });
-    } else if (brick[0]._id && brick[0].existing !== existing) {
-      brick[0].existing = existing;
-      await breache.replace(brick[0]._id, brick[0]);
+    } else if (info._id && info.existing !== existing) {
+      info.existing = existing;
+      await breache.replace(info._id, info);
     }
-    return this._abstraction.breache(collectionName);
+    return this._abstraction.for(collectionName);
   }
   
   private async _init(): Promise<DataAbstraction> {
-    const breache: DataAbstraction = this._abstraction.breache('__breache__');
-    const collections = await breache.collections();
-    if (collections.length > 0 && collections.indexOf('__breache__') !== -1) {
-      await breache.insert(BREACH);
+    const breach: DataAbstraction = this._abstraction.for('__breach__');
+    const collections = await breach.collections();
+    if (collections.length > 0 && collections.indexOf('__breach__') !== -1) {
+      await breach.insert(BREACH);
     }
-    return breache;
+    return breach;
   }
 }

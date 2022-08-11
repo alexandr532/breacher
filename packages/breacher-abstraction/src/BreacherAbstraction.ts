@@ -41,7 +41,7 @@ export class BreacherAbstraction {
   }
 
   // Returns DataAbstraction interface to access specific collection
-  public breache(collectionName: string): DataAbstraction {
+  public for(collectionName: string): DataAbstraction {
     if (!this._abstraction) {
       throw(`Abstraction:breach is not possible, Nothing running`);
     }

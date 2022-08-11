@@ -9,7 +9,7 @@
 import http from 'http';
 import * as io from 'socket.io';
 import { BreacherAbstraction } from '../../breacher-abstraction';
-import { Breache } from './Breache';
+import { Breach } from './Breach';
 
 export class Breacher {
   // Stores the only one allowed instance of Breacher.
@@ -19,7 +19,7 @@ export class Breacher {
   // Maps uri strings to the Map of database names to corresponding interface.
   private _abstraction: Map<string, Map<string, BreacherAbstraction>> = new Map();
 
-  private _breache: Map<BreacherAbstraction, Breache> = new Map();
+  private _breach: Map<BreacherAbstraction, Breach> = new Map();
   
   // Socket server is not defined if server is not running.
   private _io!: io.Server;
@@ -100,7 +100,7 @@ export class Breacher {
     this._abstraction.set(uri, new Map([[dbName, abstraction]]));
     // Creates collection management __breache__ collection
     // As well as providing interface methods for it
-    this._breache.set(abstraction, new Breache(abstraction));
+    this._breach.set(abstraction, new Breach(abstraction));
     return abstraction;
   }
 
