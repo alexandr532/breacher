@@ -1,0 +1,32 @@
+{
+  "name": "@alexandr532/breacher-transfer",
+  "description": "Transfer Layer of Breacher. Providing high websocket connection logic",
+  "keywords": [
+    "breacher",
+    "transfer",
+    "websocket"
+  ],
+  "version": "0.0.0",
+  "main": "index.js",
+  "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https//github.com/alexandr532/breacher",
+    "directory": "packages/breacher-transfer"
+  },
+  "bugs": "https://github.com/alexandr532/breacher/issues",
+  "homepage": "https://github.com/alexandr532/breacher",
+  "devDependencies": {
+    "typescript": "^4.7.4"
+  },
+  "scripts": {
+    "prepublish": "tsc"
+  },
+  "files": [
+    "LICENSE",
+    "README.md",
+    "index.js",
+    "cjs"
+  ]
+}

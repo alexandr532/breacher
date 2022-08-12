@@ -6,9 +6,8 @@
  *
  * @breacher 2022-08-03
  */
-import http from 'http';
-import * as io from 'socket.io';
 import { BreacherAbstraction } from '../../breacher-abstraction';
+import { BreacherTransfer } from '../../breacher-transfer';
 import { Breach } from './Breach';
 import { cyrb53 } from '../../shared/BreacherUtils';
 
@@ -23,15 +22,12 @@ export class Breacher {
 
   private _breach: Map<BreacherAbstraction, Breach> = new Map();
   
-  // Socket server is not defined if server is not running.
-  private _io!: io.Server;
-
-  // Http server to run socket server and web application client.
-  private _server!: http.Server;
+  private _transfer: BreacherTransfer | undefined;
 
   // It is not allowed to create Breacher instance using "new" keyword.
   // Should use statics breach or server depending on user needs.
-  protected constructor() {}
+  protected constructor() {
+  }
 
   /**
    * Starts breach in service mode with no web application running.
@@ -57,24 +53,10 @@ export class Breacher {
     if (!Breacher._instance) {
       Breacher._instance = new Breacher();
     }
-    // Start server if not already started
-    if (!this._instance._server) {
-      this._instance._startSocketServer();
-      this._instance._addListeners();
+    // Start server by creating transfer layer instance if not already running
+    if (!this._instance._transfer) {
+      this._instance._transfer = new BreacherTransfer();
     }
-  }
-
-  // Adds socket listeners
-  // TODO Should be described in separate file
-  private _addListeners(): void {
-    this._io.on('connection', (socket: io.Socket) => {
-      socket.on('disconnect', (reason: string) => {
-        console.log(`User disconnected because of ${reason}`);
-      });
-      socket.on('auth', (msg: string) => {
-        console.log(`User requests auth: `, msg);
-      });
-    });
   }
 
   /**
@@ -108,17 +90,4 @@ export class Breacher {
     return abstraction;
   }
 
-  // Creates http server
-  // TODO Should not use hardcoded port number.
-  private _startSocketServer(): void {
-    this._server = http.createServer();
-    this._io = new io.Server(this._server, {
-      cors: {
-        origin: '*'
-      }
-    });
-    this._server.listen(3003, () => {
-      console.log('Server is running');
-    });
-  }
 }
