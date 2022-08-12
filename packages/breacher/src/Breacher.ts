@@ -10,14 +10,16 @@ import http from 'http';
 import * as io from 'socket.io';
 import { BreacherAbstraction } from '../../breacher-abstraction';
 import { Breach } from './Breach';
+import { cyrb53 } from '../../shared/BreacherUtils';
 
 export class Breacher {
   // Stores the only one allowed instance of Breacher.
   private static _instance: Breacher;
 
   // Used by _register function to ensure only unique interfaces created.
-  // Maps uri strings to the Map of database names to corresponding interface.
-  private _abstraction: Map<string, Map<string, BreacherAbstraction>> = new Map();
+  // Using cyrb53 hash to encode uri and database name and map it to corresponding
+  // BreacherAbstraction
+  private _abstraction: Map<string, BreacherAbstraction> = new Map();
 
   private _breach: Map<BreacherAbstraction, Breach> = new Map();
   
@@ -83,21 +85,23 @@ export class Breacher {
    * @returns Breacher Abstraction database interface.
    */
   private _register = (uri: string, dbName: string): BreacherAbstraction => {
-    const fromUri: Map<string, BreacherAbstraction> | undefined = this._abstraction.get(uri);
-    if (fromUri != null) {
-      const fromDb: BreacherAbstraction | undefined = fromUri.get(dbName);
-      if (fromDb != null) {
-        return fromDb;
-      }
-      const abstraction = new BreacherAbstraction(uri, dbName);
-      fromUri.set(dbName, abstraction);
-      return abstraction;
+    const hash: string = cyrb53(`${dbName}@${uri}`);
+    // TODO uri parser for Standalone, Replica set, Shared cluster and Atlas deploument
+    // Each option can have auth or not. as well as AuthSource db with options
+    // Special characters in passwords such as ':', '/', '?', '#', '[', ']' and '@'
+    // must be converted using percent encoding
+    // See: https://www.mongodb.com/docs/manual/reference/connection-string/
+    // Before this, hashString is not so safe to use as uri can be different while
+    // Before this, hashString is not so safe to use as uri can be different while
+    let abstraction: BreacherAbstraction | undefined = this._abstraction.get(hash);
+    if (abstraction != null) {
+        return abstraction;
     }
     // Creates abstraction interface to access and manipulate collection data.
     // Abstraction created as new instance for each unique database, but bound
     // to use same implementor that is singleton, shared between abstractions
-    const abstraction = new BreacherAbstraction(uri, dbName);
-    this._abstraction.set(uri, new Map([[dbName, abstraction]]));
+    abstraction = new BreacherAbstraction(uri, dbName);
+    this._abstraction.set(hash, abstraction);
     // Creates collection management __breache__ collection
     // As well as providing interface methods for it
     this._breach.set(abstraction, new Breach(abstraction));

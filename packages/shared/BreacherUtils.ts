@@ -13,7 +13,7 @@
  * Largely inspired by MurmurHash2/3, but with a focus on speed/simplicity.
  * Public domain. Attribution appreciated.
  */
-export function cyrb53(str: string, seed: number = 0): number {
+export function cyrb53(str: string, seed: number = 0): string {
   let h1 = 0xdeadbeef ^ seed;
   let h2 = 0x41c6ce57 ^ seed;
   for (let i = 0, ch: number; i < str.length; i++) {
@@ -23,7 +23,7 @@ export function cyrb53(str: string, seed: number = 0): number {
   }
   h1 = Math.imul(h1 ^ (h1>>>16), 2246822507) ^ Math.imul(h2 ^ (h2>>>13), 3266489909);
   h2 = Math.imul(h2 ^ (h2>>>16), 2246822507) ^ Math.imul(h1 ^ (h1>>>13), 3266489909);
-  return 4294967296 * (2097151 & h2) + (h1>>>0);
+  return (4294967296 * (2097151 & h2) + (h1>>>0)).toString();
 }
 // String.hashCode taken from Java dates back to 1981 from Gosling Emacs is
 // extremely weak, and makes zero sense performance-wise in modern JavaScript.
