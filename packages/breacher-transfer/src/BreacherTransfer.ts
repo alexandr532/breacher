@@ -7,7 +7,9 @@
  * @transfer 2022-08-12
  */
 import http from 'http';
+import jwt from 'jsonwebtoken';
 import * as io from 'socket.io';
+import { cyrb53 } from '../../shared/BreacherUtils';
 
 // TODO Should be moved to shared config.
 const BREACHER_SERVER_PORT = 3003;
@@ -33,8 +35,28 @@ export class BreacherTransfer {
       socket.on('disconnect', (reason: string) => {
         console.log(`User disconnected because of ${reason}`);
       });
-      socket.on('auth', (msg: string) => {
-        console.log(`User requests auth: `, msg);
+      // TODO refactor this
+      socket.on('auth', (auth: string) => {
+        let hashId: string;
+        let refreshToken: string;
+        jwt.verify(auth, 'shhhhh', (err, decoded: any) => {
+          if (!err && decoded.data) {
+            hashId = decoded.data;
+            refreshToken = jwt.sign({
+              data: hashId
+            }, 'shhhhh', { expiresIn: '2d' });
+          } else {
+            refreshToken = jwt.sign({
+              data: cyrb53(socket.id)
+            }, 'shhhhh', { expiresIn: '2d' });
+          }
+          const token = jwt.sign({
+            data: socket.id
+          }, 'breacher secret', { expiresIn: '15m' });
+          socket.emit('auth', {
+            refreshToken, token
+          });
+        });
       });
     });
   }
