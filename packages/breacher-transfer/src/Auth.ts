@@ -14,7 +14,7 @@ export class Auth {
 
   public token(forId: string, isHashed: boolean = false): string {
     const hashId: string = isHashed ? forId : cyrb53(forId);
-    const token: string = jwt.sign(hashId, 'shhhhh', { expiresIn: '1d' });
+    const token: string = jwt.sign({ data: hashId }, 'shhhhh', { expiresIn: '1d' });
     this._tokens.set(hashId, token);
     return token;
   }
@@ -31,7 +31,7 @@ export class Auth {
         if (err !== null) {
           reject(`Token validation error : ${err}`);
         }
-        const hashId: string | undefined = typeof decoded === 'string' ? decoded : undefined;
+        const hashId: string | undefined = typeof decoded === 'string' ? undefined : decoded?.data;
         if (!hashId) {
           reject('Token validation error : Corrupted Token');
         }
