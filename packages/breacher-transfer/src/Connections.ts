@@ -17,11 +17,13 @@ export class Connections {
 
   public register(authId: string, socket: Socket): Socket {
     if (!this._sockets.has(authId)) {
+      console.log('Creating new connection for', authId);
       this._sockets.set(authId, socket);
       this._rooms.set(authId, new Set<string>())
       return socket;
     }
     if (this._sockets.get(authId)!.id !== socket.id) {
+      console.log('Reusing existing connection for', authId);
       this._sockets.set(authId, socket);
       socket.join(Array.from(this._rooms.get(authId)!));
     }

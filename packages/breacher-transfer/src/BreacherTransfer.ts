@@ -45,7 +45,10 @@ export class BreacherTransfer {
   private _handleConnection = (socket: io.Socket): void => {
     socket.on('disconnect', this._handleDisconnect);
 
+    console.log('Connection from socket', socket.id);
+
     socket.on('auth', async (token?: string): Promise<void> => {
+      console.log('Auth requested by socket', socket.id);
       // Revoke token is set here if new auth requested
       let revokeToken: string | undefined = token == null ? this._auth.token(socket.id) : undefined;
       // Token as newly created revoke token, or the one that we got from client
@@ -67,6 +70,7 @@ export class BreacherTransfer {
         // At this point connection id, revoke token and socket are always defined
         this._connetions.register(connectionId!, socket);
         this._addProtectedListeners(socket);
+        console.log('Registered connection', connectionId!);
         socket.emit('token', revokeToken);
       }
     });
