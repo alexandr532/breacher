@@ -14,6 +14,8 @@ import { Connections } from './Connections';
 // TODO Should be moved to shared config.
 const BREACHER_SERVER_PORT = 3003;
 
+export type BreacherTransferEvent = 'connection' | 'request';
+
 export class BreacherTransfer {
   private _auth: Auth;
 
@@ -25,10 +27,30 @@ export class BreacherTransfer {
   // Http server to run socket server and web application client.
   private _server!: http.Server;
 
+  // Used by event-subscriber to store subscriptions mapped to event name
+  private _subjects: Map<BreacherTransferEvent, Set<Function>> = new Map();
+
   public constructor() {
     this._auth = new Auth();
     this._startSocketServer();
     this._connetions = new Connections(this._io);
+  }
+
+  // TODO JSDoc here
+  public subscribe(event: BreacherTransferEvent, subscription: Function): () => void {
+    if (subscription == null) {
+      throw('BreacherTransfer: Cant subscribe with nothing');
+    }
+    if (event !== 'connection' && event !== 'request') {
+      throw(`BreacherTransfer: Cant subscribe to not existing event ${event}`);
+    }
+    let subject: Set<Function> | undefined = this._subjects.get(event);
+    if (!subject) {
+      subject = new Set<Function>();
+      this._subjects.set(event, subject);
+    }
+    subject.add(subscription);
+    return this._unsubscribe(event, subscription);
   }
 
   // Adds basic socket listeners to handle connects and disconnects.
@@ -44,8 +66,6 @@ export class BreacherTransfer {
 
   private _handleConnection = (socket: io.Socket): void => {
     socket.on('disconnect', this._handleDisconnect);
-
-    console.log('Connection from socket', socket.id);
 
     socket.on('auth', async (token?: string): Promise<void> => {
       console.log('Auth requested by socket', socket.id);
@@ -70,7 +90,7 @@ export class BreacherTransfer {
         // At this point connection id, revoke token and socket are always defined
         this._connetions.register(connectionId!, socket);
         this._addProtectedListeners(socket);
-        console.log('Registered connection', connectionId!);
+        this._notify('connection', connectionId!);
         socket.emit('token', revokeToken);
       }
     });
@@ -78,6 +98,16 @@ export class BreacherTransfer {
 
   private _handleDisconnect = (reason: string): void => {
     console.log(`User disconnected because of ${reason}`);
+  }
+
+  private _notify(event: BreacherTransferEvent, ...args: any[]): void {
+    const subject = this._subjects.get(event);
+    if (!subject) {
+      return;
+    }
+    subject.forEach((subscription: Function) => {
+      subscription(...args);
+    })
   }
 
   // Creates http server
@@ -92,5 +122,15 @@ export class BreacherTransfer {
       console.log('Server is running');
       this._addListeners();
     });
+  }
+
+  private _unsubscribe(event: BreacherTransferEvent, subscription: Function) {
+    return () => {
+      const subject: Set<Function> | undefined = this._subjects.get(event);
+      if (subject == null) {
+        return;
+      }
+      subject.delete(subscription);
+    }
   }
 }
