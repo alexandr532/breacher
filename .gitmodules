@@ -1,3 +1,6 @@
 [submodule "breacher-app"]
 	path = packages/breacher-app
 	url = https://github.com/alexandr532/breacher-app
+[submodule "fetch-for-io"]
+	path = fetch-for-io
+	url = https://github.com/alexandr532/fetch-for-io
